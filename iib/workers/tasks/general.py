@@ -32,13 +32,13 @@ def failed_request_callback(
     """
     if isinstance(exc, IIBError):
         msg = str(exc)
-    else:
-        msg = 'An unknown error occurred. See logs for details'
-        log.error(msg, exc_info=exc)
-
-    if isinstance(exc, FinalStateOverwiteError):
+    elif isinstance(exc, FinalStateOverwiteError):
         log.info(f"Request {request_id} is in a final state,ignoring update.")
         _cleanup()
         return
+
+    msg = 'An unknown error occurred. See logs for details'
+    log.error(msg, exc_info=exc)
+
     _cleanup()
     set_request_state(request_id, 'failed', msg)
